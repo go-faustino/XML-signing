@@ -73,10 +73,10 @@ import org.w3c.dom.Node;
  * </code></pre>
  */
 
-public class GenEnveloping {
+public class genEnveloping {
 
     //
-    // Synopis: java GenEnveloping [output]
+    // Synopis: java genEnveloping [output]
     //
     //   where "output" is the name of a file that will contain the
     //   generated signature. If not specified, standard ouput will be used.
