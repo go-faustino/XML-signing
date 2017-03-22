@@ -6,15 +6,18 @@ import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
+import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.security.*;
 import java.util.Collections;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -73,10 +76,10 @@ import org.w3c.dom.Node;
  * </code></pre>
  */
 
-public class GenEnveloping {
+public class genEnveloping {
 
     //
-    // Synopis: java GenEnveloping [output]
+    // Synopis: java genEnveloping [output]
     //
     //   where "output" is the name of a file that will contain the
     //   generated signature. If not specified, standard ouput will be used.
@@ -91,7 +94,10 @@ public class GenEnveloping {
         // Next, create a Reference to a same-document URI that is an Object
         // element and specify the SHA1 digest algorithm
         Reference ref = fac.newReference("#object",
-            fac.newDigestMethod(DigestMethod.SHA1, null));
+        		fac.newDigestMethod(DigestMethod.SHA256, null),
+        		Collections.singletonList
+        		(fac.newTransform("http://www.w3.org/2001/10/xml-exc-c14n#", (TransformParameterSpec) null)),
+        		null, null); 
 
         // Next, create the referenced Object
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -104,15 +110,14 @@ public class GenEnveloping {
 
         // Create the SignedInfo
         SignedInfo si = fac.newSignedInfo(
-            fac.newCanonicalizationMethod
-                (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS,
-                 (C14NMethodParameterSpec) null),
-            fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null),
+            fac.newCanonicalizationMethod("http://www.w3.org/2001/10/xml-exc-c14n#",
+               (C14NMethodParameterSpec) null),
+            fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null),            
             Collections.singletonList(ref));
 
-        // Create a DSA KeyPair
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("DSA");
-        kpg.initialize(512);
+        // Create a RSA KeyPair
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(2048);
         KeyPair kp = kpg.generateKeyPair();
 
         // Create a KeyValue containing the DSA PublicKey that was generated
