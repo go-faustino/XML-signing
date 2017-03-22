@@ -91,7 +91,7 @@ public class genEnveloping {
         // Next, create a Reference to a same-document URI that is an Object
         // element and specify the SHA1 digest algorithm
         Reference ref = fac.newReference("#object",
-            fac.newDigestMethod(DigestMethod.SHA1, null));
+            fac.newDigestMethod(DigestMethod.SHA256, null));
 
         // Next, create the referenced Object
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -107,12 +107,12 @@ public class genEnveloping {
             fac.newCanonicalizationMethod
                 (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS,
                  (C14NMethodParameterSpec) null),
-            fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null),
+                 fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null),
             Collections.singletonList(ref));
 
-        // Create a DSA KeyPair
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("DSA");
-        kpg.initialize(512);
+        // Create a RSA KeyPair
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(2048);
         KeyPair kp = kpg.generateKeyPair();
 
         // Create a KeyValue containing the DSA PublicKey that was generated
