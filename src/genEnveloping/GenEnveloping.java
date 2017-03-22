@@ -6,15 +6,18 @@ import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
+import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.security.*;
 import java.util.Collections;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -91,7 +94,10 @@ public class genEnveloping {
         // Next, create a Reference to a same-document URI that is an Object
         // element and specify the SHA1 digest algorithm
         Reference ref = fac.newReference("#object",
-            fac.newDigestMethod(DigestMethod.SHA256, null));
+        		fac.newDigestMethod(DigestMethod.SHA256, null),
+        		Collections.singletonList
+        		(fac.newTransform("http://www.w3.org/2001/10/xml-exc-c14n#", (TransformParameterSpec) null)),
+        		null, null); 
 
         // Next, create the referenced Object
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -104,10 +110,9 @@ public class genEnveloping {
 
         // Create the SignedInfo
         SignedInfo si = fac.newSignedInfo(
-            fac.newCanonicalizationMethod
-                (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS,
-                 (C14NMethodParameterSpec) null),
-                 fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null),
+            fac.newCanonicalizationMethod("http://www.w3.org/2001/10/xml-exc-c14n#",
+               (C14NMethodParameterSpec) null),
+            fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null),            
             Collections.singletonList(ref));
 
         // Create a RSA KeyPair
