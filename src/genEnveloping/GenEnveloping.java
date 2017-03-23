@@ -31,49 +31,7 @@ import org.w3c.dom.Node;
 
 /**
  * This is a simple example of generating an Enveloping XML
- * Signature using the JSR 105 API. The signature in this case references a
- * local URI that points to an Object element.
- * The resulting signature will look like (certificate and
- * signature values will be different):
- *
- * <pre><code>
- * <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
- *   <SignedInfo>
- *     <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
- *     <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/>
- *     <Reference URI="#object">
- *       <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
- *       <DigestValue>7/XTsHaBSOnJ/jXD5v0zL6VKYsk=</DigestValue>
- *     </Reference>
- *   </SignedInfo>
- *   <SignatureValue>
- *     RpMRbtMHLa0siSS+BwUpLIEmTfh/0fsld2JYQWZzCzfa5kBTz25+XA==
- *   </SignatureValue>
- *   <KeyInfo>
- *     <KeyValue>
- *       <DSAKeyValue>
- *         <P>
- *           /KaCzo4Syrom78z3EQ5SbbB4sF7ey80etKII864WF64B81uRpH5t9jQTxeEu0Imbz
- *           RMqzVDZkVG9xD7nN1kuFw==
- *         </P>
- *         <Q>
- *           li7dzDacuo67Jg7mtqEm2TRuOMU=
- *         </Q>
- *         <G>
- *           Z4Rxsnqc9E7pGknFFH2xqaryRPBaQ01khpMdLRQnG541Awtx/XPaF5Bpsy4pNWMOH
- *           CBiNU0NogpsQW5QvnlMpA==
- *         </G>
- *         <Y>
- *           wbEUaCgHZXqK4qLvbdYrAc6+Do0XVcsziCJqxzn4cJJRxwc3E1xnEXHscVgr1Cql9
- *           i5fanOKQbFXzmb+bChqig==
- *         </Y>
- *       </DSAKeyValue>
- *     </KeyValue>
- *   </KeyInfo>
- *   <Object Id="object">some text</Object>
- * </Signature>
- *
- * </code></pre>
+ * Signature.
  */
 
 public class genEnveloping {
@@ -92,7 +50,7 @@ public class genEnveloping {
         XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
 
         // Next, create a Reference to a same-document URI that is an Object
-        // element and specify the SHA1 digest algorithm
+        // element and specify the SHA256 digest algorithm
         Reference ref = fac.newReference("#object",
         		fac.newDigestMethod(DigestMethod.SHA256, null),
         		Collections.singletonList
@@ -120,7 +78,7 @@ public class genEnveloping {
         kpg.initialize(2048);
         KeyPair kp = kpg.generateKeyPair();
 
-        // Create a KeyValue containing the DSA PublicKey that was generated
+        // Create a KeyValue containing the RSA PublicKey that was generated
         KeyInfoFactory kif = fac.getKeyInfoFactory();
         KeyValue kv = kif.newKeyValue(kp.getPublic());
 
@@ -131,7 +89,7 @@ public class genEnveloping {
         XMLSignature signature = fac.newXMLSignature(si, ki,
             Collections.singletonList(obj), null, null);
 
-        // Create a DOMSignContext and specify the DSA PrivateKey for signing
+        // Create a DOMSignContext and specify the RSA PrivateKey for signing
         // and the document location of the XMLSignature
         DOMSignContext dsc = new DOMSignContext(kp.getPrivate(), doc);
 
