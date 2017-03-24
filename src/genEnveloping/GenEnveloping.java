@@ -8,6 +8,7 @@ import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.security.*;
@@ -19,7 +20,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 /**
  * XML-Enveloping-Signature 예제 변형
@@ -60,9 +60,9 @@ public class genEnveloping {
         // Next, create the referenced Object
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
-        Document doc = dbf.newDocumentBuilder().newDocument();
-        Node text = doc.createTextNode("HI");
-        XMLStructure content = new DOMStructure(text);
+        Document doc = dbf.newDocumentBuilder().parse (new File("object.xml"));
+        doc.getDocumentElement().normalize();
+        XMLStructure content = new DOMStructure(doc.getDocumentElement());
         XMLObject obj = fac.newXMLObject
             (Collections.singletonList(content), "object", null, null);
 
