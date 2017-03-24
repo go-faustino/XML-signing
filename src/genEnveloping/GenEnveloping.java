@@ -1,5 +1,6 @@
 package genEnveloping;
 
+import javax.swing.JOptionPane;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dom.*;
@@ -8,8 +9,12 @@ import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.security.*;
 import java.util.Collections;
@@ -20,6 +25,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
+
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
  * XML-Enveloping-Signature 예제 변형
@@ -76,17 +83,26 @@ public class genEnveloping {
             fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null),            
             Collections.singletonList(ref));
 
+        // Get password from base64 encoded file
+        InputStream isPass = new FileInputStream("password_base64.txt"); 
+        BufferedReader buf = new BufferedReader(new InputStreamReader(isPass)); 
+        String passBase64 = buf.readLine(); 
+        isPass.close();
+        byte[] decoded = Base64.decode(passBase64);
+        String pass = new String(decoded, "UTF-8");
+        JOptionPane.showMessageDialog(null, "pass:" + pass);
+        
         // Create a RSA KeyPair
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(2048);
         KeyPair kp = kpg.generateKeyPair();
 
         // Create a KeyValue containing the RSA PublicKey that was generated
-        KeyInfoFactory kif = fac.getKeyInfoFactory();
-        KeyValue kv = kif.newKeyValue(kp.getPublic());
+        KeyInfoFactory kif2 = fac.getKeyInfoFactory();
+        KeyValue kv = kif2.newKeyValue(kp.getPublic());
 
         // Create a KeyInfo and add the KeyValue to it
-        KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
+        KeyInfo ki = kif2.newKeyInfo(Collections.singletonList(kv));
 
         // Create the XMLSignature (but don't sign it yet)
         XMLSignature signature = fac.newXMLSignature(si, ki,
