@@ -49,22 +49,25 @@ public class genEnveloping {
         // generate the XMLSignature
         XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
 
-        // Next, create a Reference to a same-document URI that is an Object
-        // element and specify the SHA256 digest algorithm
-        Reference ref = fac.newReference("#object",
-        		fac.newDigestMethod(DigestMethod.SHA256, null),
-        		Collections.singletonList
-        		(fac.newTransform("http://www.w3.org/2001/10/xml-exc-c14n#", (TransformParameterSpec) null)),
-        		null, null); 
-
-        // Next, create the referenced Object
+        // Next, prepare the referenced Object
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         Document doc = dbf.newDocumentBuilder().parse (new File("object.xml"));
         doc.getDocumentElement().normalize();
+        String elementName = doc.getDocumentElement().getNodeName();
         XMLStructure content = new DOMStructure(doc.getDocumentElement());
+        
+        // Next, create a Reference to a same-document URI that is an Object
+        // element and specify the SHA256 digest algorithm
+        Reference ref = fac.newReference("#" + elementName,
+        		fac.newDigestMethod(DigestMethod.SHA256, null),
+        		Collections.singletonList
+        		(fac.newTransform("http://www.w3.org/2001/10/xml-exc-c14n#", (TransformParameterSpec) null)),
+        		null, null);         
+        
+        // Next, create the referenced Object
         XMLObject obj = fac.newXMLObject
-            (Collections.singletonList(content), "object", null, null);
+            (Collections.singletonList(content), elementName, null, null);
 
         // Create the SignedInfo
         SignedInfo si = fac.newSignedInfo(
