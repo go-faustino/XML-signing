@@ -1,25 +1,30 @@
 package genEnveloping;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.security.*;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+
 import javax.xml.crypto.*;
-import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dom.*;
+import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
-
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.security.*;
-import java.util.Collections;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 /**
  * XML-Enveloping-Signature 예제 변형
@@ -31,49 +36,7 @@ import org.w3c.dom.Node;
 
 /**
  * This is a simple example of generating an Enveloping XML
- * Signature using the JSR 105 API. The signature in this case references a
- * local URI that points to an Object element.
- * The resulting signature will look like (certificate and
- * signature values will be different):
- *
- * <pre><code>
- * <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
- *   <SignedInfo>
- *     <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
- *     <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/>
- *     <Reference URI="#object">
- *       <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
- *       <DigestValue>7/XTsHaBSOnJ/jXD5v0zL6VKYsk=</DigestValue>
- *     </Reference>
- *   </SignedInfo>
- *   <SignatureValue>
- *     RpMRbtMHLa0siSS+BwUpLIEmTfh/0fsld2JYQWZzCzfa5kBTz25+XA==
- *   </SignatureValue>
- *   <KeyInfo>
- *     <KeyValue>
- *       <DSAKeyValue>
- *         <P>
- *           /KaCzo4Syrom78z3EQ5SbbB4sF7ey80etKII864WF64B81uRpH5t9jQTxeEu0Imbz
- *           RMqzVDZkVG9xD7nN1kuFw==
- *         </P>
- *         <Q>
- *           li7dzDacuo67Jg7mtqEm2TRuOMU=
- *         </Q>
- *         <G>
- *           Z4Rxsnqc9E7pGknFFH2xqaryRPBaQ01khpMdLRQnG541Awtx/XPaF5Bpsy4pNWMOH
- *           CBiNU0NogpsQW5QvnlMpA==
- *         </G>
- *         <Y>
- *           wbEUaCgHZXqK4qLvbdYrAc6+Do0XVcsziCJqxzn4cJJRxwc3E1xnEXHscVgr1Cql9
- *           i5fanOKQbFXzmb+bChqig==
- *         </Y>
- *       </DSAKeyValue>
- *     </KeyValue>
- *   </KeyInfo>
- *   <Object Id="object">some text</Object>
- * </Signature>
- *
- * </code></pre>
+ * Signature.
  */
 
 public class genEnveloping {
@@ -89,54 +52,78 @@ public class genEnveloping {
 
         // First, create the DOM XMLSignatureFactory that will be used to
         // generate the XMLSignature
-        XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
+        XMLSignatureFactory signatureFac = XMLSignatureFactory.getInstance("DOM");
 
+        // Next, prepare the referenced Object (XML read from file)
+        DocumentBuilderFactory docBuilderFac = DocumentBuilderFactory.newInstance();
+        docBuilderFac.setNamespaceAware(true);
+        Document xmlFileDoc = docBuilderFac.newDocumentBuilder().parse (new File("object.xml"));
+        xmlFileDoc.getDocumentElement().normalize();
+        String rootXMLElementNameStr = xmlFileDoc.getDocumentElement().getNodeName();
+        XMLStructure xmlFileContentStructure = new DOMStructure(xmlFileDoc.getDocumentElement());
+        
         // Next, create a Reference to a same-document URI that is an Object
-        // element and specify the SHA1 digest algorithm
-        Reference ref = fac.newReference("#object",
-        		fac.newDigestMethod(DigestMethod.SHA256, null),
+        // element and specify the SHA256 digest algorithm
+        Reference xmlDocumentRef = signatureFac.newReference("#" + rootXMLElementNameStr,
+        		signatureFac.newDigestMethod(DigestMethod.SHA256, null),
         		Collections.singletonList
-        		(fac.newTransform("http://www.w3.org/2001/10/xml-exc-c14n#", (TransformParameterSpec) null)),
-        		null, null); 
-
-        // Next, create the referenced Object
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        Document doc = dbf.newDocumentBuilder().newDocument();
-        Node text = doc.createTextNode("HI");
-        XMLStructure content = new DOMStructure(text);
-        XMLObject obj = fac.newXMLObject
-            (Collections.singletonList(content), "object", null, null);
+        		(signatureFac.newTransform("http://www.w3.org/2001/10/xml-exc-c14n#", (TransformParameterSpec) null)),
+        		null, null);                                
+        
+        // Next, create the referenced Object from the XML file content
+        XMLObject xmlFileObj = signatureFac.newXMLObject
+            (Collections.singletonList(xmlFileContentStructure), rootXMLElementNameStr, null, null);
 
         // Create the SignedInfo
-        SignedInfo si = fac.newSignedInfo(
-            fac.newCanonicalizationMethod("http://www.w3.org/2001/10/xml-exc-c14n#",
+        SignedInfo signedInfo = signatureFac.newSignedInfo(
+        	signatureFac.newCanonicalizationMethod("http://www.w3.org/2001/10/xml-exc-c14n#",
                (C14NMethodParameterSpec) null),
-            fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null),            
-            Collections.singletonList(ref));
+        	signatureFac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null),            
+            Collections.singletonList(xmlDocumentRef));
 
-        // Create a RSA KeyPair
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(2048);
-        KeyPair kp = kpg.generateKeyPair();
+        // Get password from base64 encoded file
+        byte[] passwordBytes = Files.readAllBytes(new File("password_base64.txt").toPath());
+        byte[] decodedPasswordBytes = Base64.getMimeDecoder().decode(passwordBytes);
+        String passwordStr = new String(decodedPasswordBytes, "UTF-8");        
+        char[] passwordChar = passwordStr.toCharArray();
 
-        // Create a KeyValue containing the DSA PublicKey that was generated
-        KeyInfoFactory kif = fac.getKeyInfoFactory();
-        KeyValue kv = kif.newKeyValue(kp.getPublic());
+        // Create key / key info factories
+        KeyInfoFactory keyInfoFac = KeyInfoFactory.getInstance("DOM");
 
-        // Create a KeyInfo and add the KeyValue to it
-        KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
+        // Read key store from file
+        KeyStore pkcs12KeyStore = KeyStore.getInstance("PKCS12");
+        FileInputStream certificateFileInputStream = new FileInputStream("certificate.p12");
+        pkcs12KeyStore.load(certificateFileInputStream, passwordChar); 
+        certificateFileInputStream.close();
 
+        // Get X509 certificate from key store
+        Enumeration<String> keyStoreAliasesEnum = pkcs12KeyStore.aliases();
+        String alias = (String) keyStoreAliasesEnum.nextElement();
+        X509Certificate cert = (X509Certificate) pkcs12KeyStore.getCertificate(alias);
+        
+        // Get private key from key store
+        KeyStore.PrivateKeyEntry keyEntry =
+                (KeyStore.PrivateKeyEntry) pkcs12KeyStore.getEntry
+                    (alias, new KeyStore.PasswordProtection(passwordChar));
+
+        // Create the KeyInfo containing the X509Data.
+        List x509Content = new ArrayList();
+        x509Content.add(cert.getSubjectX500Principal().getName());
+        x509Content.add(cert);
+        X509Data x509CertificateData = keyInfoFac.newX509Data(x509Content);
+        KeyInfo keyInfo = keyInfoFac.newKeyInfo(Collections.singletonList(x509CertificateData));        
+
+        // Create a DOMSignContext and specify the RSA PrivateKey and
+        // location of the resulting XMLSignature's parent element.
+        DOMSignContext dsc = new DOMSignContext
+            (keyEntry.getPrivateKey(), xmlFileDoc);        
+        
         // Create the XMLSignature (but don't sign it yet)
-        XMLSignature signature = fac.newXMLSignature(si, ki,
-            Collections.singletonList(obj), null, null);
+        XMLSignature xmlSignature = signatureFac.newXMLSignature(signedInfo, keyInfo,
+        		Collections.singletonList(xmlFileObj), null, null);
 
-        // Create a DOMSignContext and specify the DSA PrivateKey for signing
-        // and the document location of the XMLSignature
-        DOMSignContext dsc = new DOMSignContext(kp.getPrivate(), doc);
-
-        // Lastly, generate the enveloping signature using the PrivateKey
-        signature.sign(dsc);
+        // Lastly, generate the enveloping signature
+        xmlSignature.sign(dsc);
 
         // output the resulting document
         OutputStream os;
@@ -148,6 +135,6 @@ public class genEnveloping {
 
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer trans = tf.newTransformer();
-        trans.transform(new DOMSource(doc), new StreamResult(os));
+        trans.transform(new DOMSource(xmlFileDoc), new StreamResult(os));
     }
 }
