@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.security.*;
 import java.security.cert.X509Certificate;
@@ -13,7 +14,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.*;
@@ -26,6 +26,9 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * XML-Enveloping-Signature 예제 변형
@@ -50,14 +53,6 @@ public class genEnveloping {
     //
 	
     public static void main(String[] args) throws Exception {
-
-    	// Validate input parameters
-        if (args.length > 0) {
-        	JOptionPane.showMessageDialog(null, "Parameters\n Password file: " + args[0] + "\n Certificate file: " + args[1] + "\n Input file: " + args[2] + "\n Output file: " + args[3]);        	
-        } else {
-        	JOptionPane.showMessageDialog(null, "Parameters missing: PasswordFile CertificateFile InputFile OutputFile");
-        	return;
-        } 
         
         // First, create the DOM XMLSignatureFactory that will be used to
         // generate the XMLSignature
@@ -66,10 +61,21 @@ public class genEnveloping {
         // Next, prepare the referenced Object (XML read from file)
         DocumentBuilderFactory docBuilderFac = DocumentBuilderFactory.newInstance();
         docBuilderFac.setNamespaceAware(true);
-        Document xmlFileDoc = docBuilderFac.newDocumentBuilder().parse (new File(args[2]));
-        xmlFileDoc.getDocumentElement().normalize();
-        String rootXMLElementNameStr = xmlFileDoc.getDocumentElement().getNodeName();
+        Document doc = docBuilderFac.newDocumentBuilder().parse (new File(args[2]));
+        doc.getDocumentElement().normalize();
+        Element element = doc.getDocumentElement();        
+        Document xmlFileDoc = element.getOwnerDocument();
+        
+        String fullRootXMLElementNameStr = xmlFileDoc.getDocumentElement().getNodeName();
+        int startIndex = fullRootXMLElementNameStr.indexOf(":");
+        int endIndex = fullRootXMLElementNameStr.indexOf("_");
+        if (endIndex == -1) {
+        	endIndex = fullRootXMLElementNameStr.length();
+        }        
+        String rootXMLElementNameStr = fullRootXMLElementNameStr.substring(startIndex + 1, endIndex);       
         XMLStructure xmlFileContentStructure = new DOMStructure(xmlFileDoc.getDocumentElement());
+        XMLObject xmlFileObj = signatureFac.newXMLObject
+                (Collections.singletonList(xmlFileContentStructure), rootXMLElementNameStr, null, null);
         
         // Next, create a Reference to a same-document URI that is an Object
         // element and specify the SHA256 digest algorithm
@@ -78,10 +84,6 @@ public class genEnveloping {
         		Collections.singletonList
         		(signatureFac.newTransform("http://www.w3.org/2001/10/xml-exc-c14n#", (TransformParameterSpec) null)),
         		null, null);                                
-        
-        // Next, create the referenced Object from the XML file content
-        XMLObject xmlFileObj = signatureFac.newXMLObject
-            (Collections.singletonList(xmlFileContentStructure), rootXMLElementNameStr, null, null);
 
         // Create the SignedInfo
         SignedInfo signedInfo = signatureFac.newSignedInfo(
@@ -133,7 +135,7 @@ public class genEnveloping {
 
         // Lastly, generate the enveloping signature
         xmlSignature.sign(dsc);
-
+                
         // output the resulting document
         OutputStream os;
         if (args.length > 0) {
@@ -146,4 +148,14 @@ public class genEnveloping {
         Transformer trans = tf.newTransformer();
         trans.transform(new DOMSource(xmlFileDoc), new StreamResult(os));
     }
+    private static String transformXmlNodeToXmlString(Node node)
+            throws TransformerException {
+        TransformerFactory transFactory = TransformerFactory.newInstance();
+        Transformer transformer = transFactory.newTransformer();
+        StringWriter buffer = new StringWriter();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.transform(new DOMSource(node), new StreamResult(buffer));
+        String xml = buffer.toString();
+        return xml;
+    }    
 }
