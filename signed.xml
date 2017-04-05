@@ -1,26 +1,26 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-   <SignedInfo>
-      <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-      <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
-      <Reference URI="#XMLObject">
-         <Transforms>
-            <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-         </Transforms>
-         <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-         <DigestValue>wlRb3u220tRYkUyXt2hSeDSVYpiVLfpSEnUrYiaXtr0=</DigestValue>
-      </Reference>
-   </SignedInfo>
-   <SignatureValue>RAzQn2JReTncK+lSdDfg+9OrDvPmpBjo5g0Z9YQTfYWpBILjcqPapUuLNF+gYKMRG9MPTV+gqi7MSXpBSCP2XxEp/ml6UiV1QAsTzqaUlzua4WPt7U26Ijk4zaTlUfBw3FBJKcmGtkIJUxySaK0Q7PbPC5aEd0sIw7xjwDCg3HE/9d7BVZqQC6C7JNbFIx3JK/aA2XhwUr4l3eB/WvcsXRpS3/dFQqzpEsRTcC8Kl4M5TuC/oz9teVI+ng2lhg6zAEKyOq3O5pjG46QXQQ16oghZ0OcsBed2E7h0fTZKcVJ8WVm2gmH9fz3LexprY27SrmHjebIL1OHRnrHSUDRajQ==</SignatureValue>
-   <KeyInfo>
-      <X509Data>
-         <X509SubjectName>O=Internet Widgits Pty Ltd,ST=Some-State,C=AU</X509SubjectName>
-         <X509Certificate>MIIDtTCCAp2gAwIBAgIJAK8X9yyu477yMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwHhcNMTcwMzI4MTA1MDI3WhcNMTgwMzI4MTA1MDI3WjBFMQswCQYDVQQGEwJBVTETMBEGA1UECBMKU29tZS1TdGF0ZTEhMB8GA1UEChMYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtXeKQNo8D9XrVScwcRDRMmpNlMx9q7R9saNKy34bTi2s7VJPnLy22iQhjpbT3gzNs/8jj0sDH/dmIbyRJNSyVUfbwYKw2w2s+42UsS10FJqG3rzxBi6v5rwJBTon8A35QSjEbQYhMPzSYYCQ5sRRoQFPRgsypqT7tEpJjJVnabH1UHgRQwf4FmPxi0QUxQAgNqyRCTk0Uy2HvE8QuRcBDybO9cm6hLU2JHQ/Emh9yd/ZzOH5fFQUEQ4695j9jJEPRQIkNDCDKpW7mql2ydjND/fgHrVT8lTKFkVqUHKFX0vUFOYDkPqnS2jhjg7l1z86TmHYVgx4myBI026/0I7sMQIDAQABo4GnMIGkMB0GA1UdDgQWBBTHBTUwhxDqpkVvnDKGCOWgvT6RSTB1BgNVHSMEbjBsgBTHBTUwhxDqpkVvnDKGCOWgvT6RSaFJpEcwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgTClNvbWUtU3RhdGUxITAfBgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZIIJAK8X9yyu477yMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAChP8ZkZjfGgAwcx9MY8k+9SE4yeWnNLzEE3E9lZfptP8TaW+8iW95lqibGO8GaRZMijta59bi2bMfdrgbYlszmt3YII8t4SZnzJ2hbsLBUORfD4w7HMAjZSyImiL2IutyubWxVbeF1wNMWHsxLUmXMEeFXS8ZyHWpV5Ky1WxxQv2HTuEN6a4f4jw43sqqosrr6yYiZL2Q4aVo153HYsWy2Jh/P/GlW1B0MdpqQo8L/O2/te3Qd+YPvJ/J70A01RpzMbgOaO3JY3dFO+HMZsQ4FSsa2f9oNiJV2iEdLfk+TJOgZ8tu/q4qdxZaPZhNBjtd9B8nw5q2kUyDM8kX72vPU=</X509Certificate>
-      </X509Data>
-   </KeyInfo>
-   <Object Id="XMLObject">
-      <XMLObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="">
-         <Message>This file needs signing</Message>
-      </XMLObject>
-   </Object>
-</Signature>
+<?xml version="1.0" encoding="UTF-8"?><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><Reference URI="#UnsignedXMLObject"><Transforms><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><DigestValue>ZKq0nS1Ib44uvHNFPOnoBkkgOT+lPDLKk00tJaa7JUg=</DigestValue></Reference></SignedInfo><SignatureValue>iM2iq3ATDFuJUGgGnSyFwPPVIoPqtf8fpNzb6NuqzuFJQtwAN8mqHVQwItE4bPACjptgUP37AJlS
+w/NYVTeYTtvVD7BeVVGcQCOeYRvhWU0+4neqoZY/8qKurmmVHZMeKrsaGqme358kIKp8Ux1cGjND
+0Z4umTh/y1VHlYj/2H3s2Xzne3s8BI5XXP4mc3yuEmZD7Mw3AY8qKO7xO/goKLdpbdOMfcm1CLVF
+PjMpSbVBJLGvGskzAUxb6ifE1W5fzpgamIFeq8d/R09si+7Xp96fMsW4sY6qM5k2tDrl+WIKja9t
+9Wu0P44z0XXiC/A66/4zytLZUYAUpJCMOq7vRA==</SignatureValue><KeyInfo><X509Data><X509SubjectName>O=Internet Widgits Pty Ltd,ST=Some-State,C=AU</X509SubjectName><X509Certificate>MIIDtTCCAp2gAwIBAgIJAM1uhBquoIVrMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNVBAYTAkFVMRMw
+EQYDVQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwHhcN
+MTcwNDA0MTUwNDMxWhcNMTgwNDA0MTUwNDMxWjBFMQswCQYDVQQGEwJBVTETMBEGA1UECBMKU29t
+ZS1TdGF0ZTEhMB8GA1UEChMYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAzODAqPZ3dnfWOj1WdgMVJH6ZNe43D222z3aTlk7I2HEsIXZBgTHm
+iZOStQNgSabT9Mf4dGC815YsAbkarx0pgUqNNsr02k6POu0bEeXyL/YWFnIUabH1VqchAKqxMfBa
+orRXLAOP5+rp912/Vd4zIzqY/GW6LlZ8w4lJGIwi/TGBe6CHMZrKM3LsykUnfruJXScWcto6rva3
+KAzpI6fLEqqc1HcvL9pyEQvwmNNmysd9HuCJh13SzuUVYOJkIWQ4/Qj87V0PQBuK88q0QgkeQw7V
+LJ2KaiKNBuV6+kHUHUukwBqLT73ygQLQHOVKA6Co4fzG3bcJnWrP7TnSu3inKwIDAQABo4GnMIGk
+MB0GA1UdDgQWBBQH4oIHeTF8d4RwfW3WSzKfFXkIIzB1BgNVHSMEbjBsgBQH4oIHeTF8d4RwfW3W
+SzKfFXkII6FJpEcwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgTClNvbWUtU3RhdGUxITAfBgNVBAoT
+GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZIIJAM1uhBquoIVrMAwGA1UdEwQFMAMBAf8wDQYJKoZI
+hvcNAQELBQADggEBAG4U2vuOugnaDgZkEYqyj+aPu21heLM8dxef/9MYFUjMe0LJP4m9o7FJYj6z
+nOwsGB1ZxuE3gQSUmcpY1tGzuLJimZdjx1cLnVc5lN+3q1hNjJd6t09i0VeMUqdONTzMwbfPfyPr
+bk68MtFg3Jxz+Hpc9vLG8cA5zu6M+GKvmqk2QhMPL7/o+Eu2bfYgmtUjcvuYJrzlDDPJImBnyqKw
+jaGOUoolaCA4h7Qmov9/Rsvhxwk9eDLKFSj6+Eji73YBiFw1HsYFJhuNxVcymgY9CUpH9tZ5Fcn6
+PMGowcfEvz/7+y57WL7F/Sx7IT/5yYuv4bwxK6kOZ8XIk/7VGgQFL9g=</X509Certificate></X509Data></KeyInfo><Object Id="UnsignedXMLObject"><UnsignedXMLObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <UnsignedXMLObjectContent>
+      <UnsignedXMLField1>This file needs signing</UnsignedXMLField1>
+      <UnsignedXMLField2>of the enveloping type</UnsignedXMLField2>
+   </UnsignedXMLObjectContent>
+</UnsignedXMLObject></Object></Signature>

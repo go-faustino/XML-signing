@@ -1,8 +1,10 @@
 package genEnveloping;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -26,9 +28,8 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 
 /**
  * XML-Enveloping-Signature 예제 변형
@@ -49,7 +50,7 @@ public class genEnveloping {
     // Synopis: java genEnveloping [output]
     //
     //   where "output" is the name of a file that will contain the
-    //   generated signature. If not specified, standard ouput will be used.
+    //   generated signature. If not specified, standard output will be used.
     //
 	
     public static void main(String[] args) throws Exception {
@@ -61,10 +62,8 @@ public class genEnveloping {
         // Next, prepare the referenced Object (XML read from file)
         DocumentBuilderFactory docBuilderFac = DocumentBuilderFactory.newInstance();
         docBuilderFac.setNamespaceAware(true);
-        Document doc = docBuilderFac.newDocumentBuilder().parse (new File(args[2]));
-        doc.getDocumentElement().normalize();
-        Element element = doc.getDocumentElement();        
-        Document xmlFileDoc = element.getOwnerDocument();
+        Document xmlFileDoc = docBuilderFac.newDocumentBuilder().parse (new File(args[2]));
+        xmlFileDoc.getDocumentElement().normalize();
         
         String fullRootXMLElementNameStr = xmlFileDoc.getDocumentElement().getNodeName();
         int startIndex = fullRootXMLElementNameStr.indexOf(":");
@@ -73,6 +72,7 @@ public class genEnveloping {
         	endIndex = fullRootXMLElementNameStr.length();
         }        
         String rootXMLElementNameStr = fullRootXMLElementNameStr.substring(startIndex + 1, endIndex);       
+
         XMLStructure xmlFileContentStructure = new DOMStructure(xmlFileDoc.getDocumentElement());
         XMLObject xmlFileObj = signatureFac.newXMLObject
                 (Collections.singletonList(xmlFileContentStructure), rootXMLElementNameStr, null, null);
@@ -133,29 +133,40 @@ public class genEnveloping {
         XMLSignature xmlSignature = signatureFac.newXMLSignature(signedInfo, keyInfo,
         		Collections.singletonList(xmlFileObj), null, null);
 
-        // Lastly, generate the enveloping signature
-        xmlSignature.sign(dsc);
-                
-        // output the resulting document
-        OutputStream os;
-        if (args.length > 0) {
-           os = new FileOutputStream(args[3]);
-        } else {
-           os = System.out;
-        }
-
+        // Save root element content in a string. The signing process changes the name spaces,
+        // but creates the digest with the original name spaces, which causes an error validating 
+        // the signature: error=12:invalid data:data and digest do not match
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer trans = tf.newTransformer();
-        trans.transform(new DOMSource(xmlFileDoc), new StreamResult(os));
+        StringWriter swBefore = new StringWriter();
+        StreamResult resultBefore = new StreamResult(swBefore);
+        DOMSource sourceXMLBefore = new DOMSource(xmlFileDoc.getDocumentElement());
+        trans.transform(sourceXMLBefore, resultBefore);
+        String xmlBeforeStr = swBefore.toString();
+        
+        int startRootBeforeIndex = xmlBeforeStr.indexOf("<" + fullRootXMLElementNameStr);
+        String xmlBeforeAuxStr = xmlBeforeStr.substring(startRootBeforeIndex);       
+        int endRootBeforeIndex = xmlBeforeAuxStr.indexOf(">");
+        String rootXMLElementContentBeforeStr = xmlBeforeAuxStr.substring(0, endRootBeforeIndex);       
+        
+        // Generate the enveloping signature
+        xmlSignature.sign(dsc);
+
+        // Before writing the file, the root element name spaces are changed back to their original value.
+        StringWriter swAfter = new StringWriter();
+        StreamResult resultAfter = new StreamResult(swAfter);
+        DOMSource sourceXMLAfter = new DOMSource(xmlFileDoc.getDocumentElement());
+        trans.transform(sourceXMLAfter, resultAfter);
+        String xmlAfterStr = swAfter.toString();
+                
+        int startRootAfterIndex = xmlAfterStr.indexOf("<" + fullRootXMLElementNameStr);
+        String xmlAfterAuxStr = xmlAfterStr.substring(startRootAfterIndex);       
+        int endRootAfterIndex = xmlAfterAuxStr.indexOf(">");
+        String rootXMLElementContentAfterStr = xmlAfterAuxStr.substring(0, endRootAfterIndex);       
+        
+        xmlAfterStr = xmlAfterStr.replace(rootXMLElementContentAfterStr, rootXMLElementContentBeforeStr);
+
+        // Write the file
+        Files.write(new File(args[3]).toPath(), xmlAfterStr.getBytes());
     }
-    private static String transformXmlNodeToXmlString(Node node)
-            throws TransformerException {
-        TransformerFactory transFactory = TransformerFactory.newInstance();
-        Transformer transformer = transFactory.newTransformer();
-        StringWriter buffer = new StringWriter();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        transformer.transform(new DOMSource(node), new StreamResult(buffer));
-        String xml = buffer.toString();
-        return xml;
-    }    
 }

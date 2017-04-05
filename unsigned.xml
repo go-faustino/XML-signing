@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<XMLObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-   <Message>This file needs signing</Message>
-</XMLObject>
+<UnsignedXMLObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <UnsignedXMLObjectContent>
+      <UnsignedXMLField1>This file needs signing</UnsignedXMLField1>
+      <UnsignedXMLField2>of the enveloping type</UnsignedXMLField2>
+   </UnsignedXMLObjectContent>
+</UnsignedXMLObject>
