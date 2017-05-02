@@ -2,12 +2,11 @@ package genEnveloping;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.StringWriter;
-import java.nio.file.Files;
 import java.security.*;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -24,6 +23,8 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
+
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
  * XML-Enveloping-Signature 예제 변형
@@ -48,6 +49,11 @@ public class genEnveloping {
     //
 	
     public static void main(String[] args) throws Exception {
+
+    	String passFileName = args[0];
+    	String certFileName = args[1];
+    	String inputFileName = args[2];
+    	String outputFileName = args[3];
         
         // First, create the DOM XMLSignatureFactory that will be used to
         // generate the XMLSignature
@@ -56,7 +62,7 @@ public class genEnveloping {
         // Next, prepare the referenced Object (XML read from file)
         DocumentBuilderFactory docBuilderFac = DocumentBuilderFactory.newInstance();
         docBuilderFac.setNamespaceAware(true);
-        Document xmlFileDoc = docBuilderFac.newDocumentBuilder().parse (new File(args[2]));
+        Document xmlFileDoc = docBuilderFac.newDocumentBuilder().parse (new File(inputFileName));
         xmlFileDoc.getDocumentElement().normalize();
         
         String fullRootXMLElementNameStr = xmlFileDoc.getDocumentElement().getNodeName();
@@ -87,8 +93,13 @@ public class genEnveloping {
             Collections.singletonList(xmlDocumentRef));
 
         // Get password from base64 encoded file
-        byte[] passwordBytes = Files.readAllBytes(new File(args[0]).toPath());
-        byte[] decodedPasswordBytes = Base64.getMimeDecoder().decode(passwordBytes);
+        FileInputStream passFileInputStream = new FileInputStream(passFileName);
+        File passFile = new File(passFileName);
+        byte[] passwordBytes = new byte[(int) passFile.length()];
+        passFileInputStream.read(passwordBytes); 
+        passFileInputStream.close();
+                
+        byte[] decodedPasswordBytes = Base64.decode(passwordBytes);
         String passwordStr = new String(decodedPasswordBytes, "UTF-8");        
         char[] passwordChar = passwordStr.toCharArray();
 
@@ -97,7 +108,7 @@ public class genEnveloping {
 
         // Read key store from file
         KeyStore pkcs12KeyStore = KeyStore.getInstance("PKCS12");
-        FileInputStream certificateFileInputStream = new FileInputStream(args[1]);
+        FileInputStream certificateFileInputStream = new FileInputStream(certFileName);
         pkcs12KeyStore.load(certificateFileInputStream, passwordChar); 
         certificateFileInputStream.close();
 
@@ -161,6 +172,8 @@ public class genEnveloping {
         xmlAfterStr = xmlAfterStr.replace(rootXMLElementContentAfterStr, rootXMLElementContentBeforeStr);
 
         // Write the file
-        Files.write(new File(args[3]).toPath(), xmlAfterStr.getBytes());
+        FileOutputStream fileOutputStream = new FileOutputStream(outputFileName);
+        fileOutputStream.write(xmlAfterStr.getBytes()); 
+        fileOutputStream.close();
     }
 }
