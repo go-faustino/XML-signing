@@ -111,6 +111,42 @@ public class GenEnvelopingMainGUI {
 		outputFileTextField.setBounds(10, 204, 505, 20);
 		outputFileTextField.setText(appPath + "\\signed.xml");
 		frmXmlSigningFacility.getContentPane().add(outputFileTextField);
+
+		JButton getPassFileButton = new JButton("Find...");
+		getPassFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				GenEnvelopingFindGUI.main(passFileTextField.getText());
+			}
+		});
+		getPassFileButton.setBounds(525, 35, 89, 23);
+		frmXmlSigningFacility.getContentPane().add(getPassFileButton);
+		
+		JButton getCertFileButton = new JButton("Find...");
+		getCertFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				GenEnvelopingFindGUI.main(certFileTextField.getText());
+			}
+		});
+		getCertFileButton.setBounds(525, 91, 89, 23);
+		frmXmlSigningFacility.getContentPane().add(getCertFileButton);
+		
+		JButton getInputFileButton = new JButton("Find...");
+		getInputFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				GenEnvelopingFindGUI.main(inputFileTextField.getText());
+			}
+		});
+		getInputFileButton.setBounds(525, 147, 89, 23);
+		frmXmlSigningFacility.getContentPane().add(getInputFileButton);
+		
+		JButton getOutputFileButton = new JButton("Find...");
+		getOutputFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				GenEnvelopingFindGUI.main(outputFileTextField.getText());
+			}
+		});
+		getOutputFileButton.setBounds(525, 203, 89, 23);
+		frmXmlSigningFacility.getContentPane().add(getOutputFileButton);
 		
 		JButton btnSign = new JButton("Sign file");
 		btnSign.addActionListener(new ActionListener() {
