@@ -3,6 +3,7 @@ package genEnveloping;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.security.*;
 import java.security.cert.X509Certificate;
@@ -11,6 +12,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.*;
@@ -172,8 +174,24 @@ public class genEnveloping {
         xmlAfterStr = xmlAfterStr.replace(rootXMLElementContentAfterStr, rootXMLElementContentBeforeStr);
 
         // Write the file
-        FileOutputStream fileOutputStream = new FileOutputStream(outputFileName);
-        fileOutputStream.write(xmlAfterStr.getBytes()); 
-        fileOutputStream.close();
+        File outputFile = new File(outputFileName);
+        if(outputFile.exists() && !outputFile.isDirectory()) {
+        	int promptOverwrite = JOptionPane.showConfirmDialog(null, "Do you want to overwrite output file?", "File Exists", JOptionPane.YES_NO_OPTION);
+            if (promptOverwrite == JOptionPane.YES_OPTION) {
+            	writeOutput(outputFileName, xmlAfterStr);
+            }
+            else {
+               JOptionPane.showMessageDialog(null, "File not written");
+            }        	
+        } else {
+        	writeOutput(outputFileName, xmlAfterStr);
+        }
     }
+	
+    private static void writeOutput(String outputFileName, String xmlAfterStr) throws IOException {
+    	FileOutputStream fileOutputStream = new FileOutputStream(outputFileName);
+    	fileOutputStream.write(xmlAfterStr.getBytes()); 
+    	fileOutputStream.close();		
+        JOptionPane.showMessageDialog(null, "File signed successfully");
+	}
 }

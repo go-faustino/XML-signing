@@ -9,10 +9,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 
 public class GenEnvelopingMainGUI {
 
@@ -29,8 +32,7 @@ public class GenEnvelopingMainGUI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GenEnvelopingMainGUI window = new GenEnvelopingMainGUI();
-					window.frmXmlSigningFacility.setVisible(true);
+					new GenEnvelopingMainGUI();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -42,17 +44,25 @@ public class GenEnvelopingMainGUI {
 	 * Create the application.
 	 */
 	public GenEnvelopingMainGUI() {
-		initialize();
+		frmXmlSigningFacility = new JFrame();
+		frmXmlSigningFacility.addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent e) {
+		    	quitPrompt();
+		    }
+		});		
+		CreateGUI();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frmXmlSigningFacility = new JFrame();
+	public void quitPrompt() {
+    	int promptQuit = JOptionPane.showConfirmDialog(null, "Are you sure?", "Quit application", JOptionPane.YES_NO_OPTION);		 
+        if (promptQuit == JOptionPane.YES_OPTION)
+			System.exit(0);
+	}
+	
+	public void CreateGUI() {
 		frmXmlSigningFacility.setTitle("XML signing");
 		frmXmlSigningFacility.setBounds(100, 100, 640, 339);
-		frmXmlSigningFacility.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmXmlSigningFacility.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
 		frmXmlSigningFacility.setJMenuBar(menuBar);
@@ -63,15 +73,14 @@ public class GenEnvelopingMainGUI {
 		JMenuItem mntmQuit = new JMenuItem("Quit");
 		mntmQuit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-		        JOptionPane.showMessageDialog(null, "Quit command received. Goodbye.");
-				System.exit(0);
+		    	quitPrompt();
 			}
 		});
 		mnNewMenu.add(mntmQuit);
 		frmXmlSigningFacility.getContentPane().setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Password file (base64)");
-		lblNewLabel.setBounds(10, 11, 182, 14);
+		lblNewLabel.setBounds(10, 11, 310, 14);
 		frmXmlSigningFacility.getContentPane().add(lblNewLabel);
 		
 		final String appPath = System.getProperty("user.dir");
@@ -83,7 +92,7 @@ public class GenEnvelopingMainGUI {
 		passFileTextField.setText(appPath + "\\password_base64.txt");
 		
 		JLabel lblCertificatepkcs = new JLabel("Certificate file (PKCS12)");
-		lblCertificatepkcs.setBounds(10, 67, 182, 14);
+		lblCertificatepkcs.setBounds(10, 67, 310, 14);
 		frmXmlSigningFacility.getContentPane().add(lblCertificatepkcs);
 		
 		certFileTextField = new JTextField();
@@ -93,7 +102,7 @@ public class GenEnvelopingMainGUI {
 		frmXmlSigningFacility.getContentPane().add(certFileTextField);
 		
 		JLabel lblInputFile = new JLabel("Unsigned input file (XML)");
-		lblInputFile.setBounds(10, 123, 182, 14);
+		lblInputFile.setBounds(10, 123, 310, 14);
 		frmXmlSigningFacility.getContentPane().add(lblInputFile);
 		
 		inputFileTextField = new JTextField();
@@ -103,7 +112,7 @@ public class GenEnvelopingMainGUI {
 		frmXmlSigningFacility.getContentPane().add(inputFileTextField);
 		
 		JLabel lblSignedOutputFile = new JLabel("Signed output file destination (XML)");
-		lblSignedOutputFile.setBounds(10, 179, 182, 14);
+		lblSignedOutputFile.setBounds(10, 179, 310, 14);
 		frmXmlSigningFacility.getContentPane().add(lblSignedOutputFile);
 		
 		outputFileTextField = new JTextField();
@@ -115,7 +124,12 @@ public class GenEnvelopingMainGUI {
 		JButton getPassFileButton = new JButton("Find...");
 		getPassFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				GenEnvelopingFindGUI.main(passFileTextField.getText());
+				JFileChooser fileChooser = new JFileChooser(passFileTextField.getText());
+				fileChooser.setBounds(0, 0, 582, 397);
+				int result = fileChooser.showOpenDialog(null);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					passFileTextField.setText(fileChooser.getSelectedFile().toString());
+				}
 			}
 		});
 		getPassFileButton.setBounds(525, 35, 89, 23);
@@ -124,7 +138,12 @@ public class GenEnvelopingMainGUI {
 		JButton getCertFileButton = new JButton("Find...");
 		getCertFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				GenEnvelopingFindGUI.main(certFileTextField.getText());
+				JFileChooser fileChooser = new JFileChooser(certFileTextField.getText());
+				fileChooser.setBounds(0, 0, 582, 397);
+				int result = fileChooser.showOpenDialog(null);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					certFileTextField.setText(fileChooser.getSelectedFile().toString());
+				}
 			}
 		});
 		getCertFileButton.setBounds(525, 91, 89, 23);
@@ -133,7 +152,12 @@ public class GenEnvelopingMainGUI {
 		JButton getInputFileButton = new JButton("Find...");
 		getInputFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				GenEnvelopingFindGUI.main(inputFileTextField.getText());
+				JFileChooser fileChooser = new JFileChooser(inputFileTextField.getText());
+				fileChooser.setBounds(0, 0, 582, 397);
+				int result = fileChooser.showOpenDialog(null);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					inputFileTextField.setText(fileChooser.getSelectedFile().toString());
+				}
 			}
 		});
 		getInputFileButton.setBounds(525, 147, 89, 23);
@@ -142,7 +166,12 @@ public class GenEnvelopingMainGUI {
 		JButton getOutputFileButton = new JButton("Find...");
 		getOutputFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				GenEnvelopingFindGUI.main(outputFileTextField.getText());
+				JFileChooser fileChooser = new JFileChooser(outputFileTextField.getText());
+				fileChooser.setBounds(0, 0, 582, 397);
+				int result = fileChooser.showOpenDialog(null);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					outputFileTextField.setText(fileChooser.getSelectedFile().toString());
+				}
 			}
 		});
 		getOutputFileButton.setBounds(525, 203, 89, 23);
@@ -159,7 +188,6 @@ public class GenEnvelopingMainGUI {
 
 				try {
 					genEnveloping.main(genEnvelopingArgs);
-			        JOptionPane.showMessageDialog(null, "File signed successfully");
 				} catch (Exception e2) {
 					e2.printStackTrace();
 			        JOptionPane.showMessageDialog(null, "Error: " + e2);
@@ -169,5 +197,6 @@ public class GenEnvelopingMainGUI {
 		});
 		btnSign.setBounds(525, 246, 89, 23);
 		frmXmlSigningFacility.getContentPane().add(btnSign);
+		frmXmlSigningFacility.setVisible(true);
 	}
 }
