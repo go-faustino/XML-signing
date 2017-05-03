@@ -124,7 +124,7 @@ public class GenEnvelopingMainGUI {
 		JButton getPassFileButton = new JButton("Find...");
 		getPassFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser(passFileTextField.getText());
+				JFileChooser fileChooser = new JFileChooser(appPath);
 				fileChooser.setBounds(0, 0, 582, 397);
 				int result = fileChooser.showOpenDialog(null);
 				if (result == JFileChooser.APPROVE_OPTION) {
@@ -138,7 +138,7 @@ public class GenEnvelopingMainGUI {
 		JButton getCertFileButton = new JButton("Find...");
 		getCertFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser(certFileTextField.getText());
+				JFileChooser fileChooser = new JFileChooser(appPath);
 				fileChooser.setBounds(0, 0, 582, 397);
 				int result = fileChooser.showOpenDialog(null);
 				if (result == JFileChooser.APPROVE_OPTION) {
@@ -152,7 +152,7 @@ public class GenEnvelopingMainGUI {
 		JButton getInputFileButton = new JButton("Find...");
 		getInputFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser(inputFileTextField.getText());
+				JFileChooser fileChooser = new JFileChooser(appPath);
 				fileChooser.setBounds(0, 0, 582, 397);
 				int result = fileChooser.showOpenDialog(null);
 				if (result == JFileChooser.APPROVE_OPTION) {
@@ -166,7 +166,7 @@ public class GenEnvelopingMainGUI {
 		JButton getOutputFileButton = new JButton("Find...");
 		getOutputFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser(outputFileTextField.getText());
+				JFileChooser fileChooser = new JFileChooser(appPath);
 				fileChooser.setBounds(0, 0, 582, 397);
 				int result = fileChooser.showOpenDialog(null);
 				if (result == JFileChooser.APPROVE_OPTION) {
