@@ -239,14 +239,14 @@ public class GenEnvelopingMainGUI {
 
 				if(rdbtnEnveloping.isSelected()) {					
 					try {
-						genEnveloping.main(genArgs);
+						GenEnveloping.main(genArgs);
 					} catch (Exception e2) {
 						e2.printStackTrace();
 				        JOptionPane.showMessageDialog(null, "Error: " + e2);
 					}				
 				} else {
 					try {
-						genEnveloped.main(genArgs);
+						GenEnveloped.main(genArgs);
 					} catch (Exception e2) {
 						e2.printStackTrace();
 				        JOptionPane.showMessageDialog(null, "Error: " + e2);

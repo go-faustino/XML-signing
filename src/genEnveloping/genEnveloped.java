@@ -41,7 +41,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
  * Signature.
  */
 
-public class genEnveloped {
+public class GenEnveloped {
 
     //
     // Synopis: java genEnveloped [output]
