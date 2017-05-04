@@ -29,10 +29,10 @@ import org.w3c.dom.Document;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
- * XML-Enveloped-Signature ¿¹Á¦ º¯Çü
+ * XML-Enveloped-Signature Â¿Â¹ÃÂ¦ ÂºÂ¯Ã‡Ã¼
  * 
  * @source <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/xmldsig/GenEnveloped.java"/>
- * @author <a href="mailto:modesty101@daum.net">±èµ¿±Ô</a>
+ * @author <a href="mailto:modesty101@daum.net">Â±Ã¨ÂµÂ¿Â±Ã”</a>
  * @since 2017
  */
 
