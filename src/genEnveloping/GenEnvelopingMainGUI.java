@@ -16,6 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 
 public class GenEnvelopingMainGUI {
 
@@ -24,6 +26,13 @@ public class GenEnvelopingMainGUI {
 	private JTextField certFileTextField;
 	private JTextField inputFileTextField;
 	private JTextField outputFileTextField;
+	private JRadioButton rdbtnInclude;
+	private JRadioButton rdbtnDoNotInclude;
+	private JRadioButton rdbtnEnveloping;
+	private JRadioButton rdbtnEnveloped;
+	private ButtonGroup buttonGroupIncludePubKey;
+	private ButtonGroup buttonGroupSignatureType;
+	private String includePubKeyButtonValue;
 
 	/**
 	 * Launch the application.
@@ -61,7 +70,7 @@ public class GenEnvelopingMainGUI {
 	
 	public void CreateGUI() {
 		frmXmlSigningFacility.setTitle("XML signing");
-		frmXmlSigningFacility.setBounds(100, 100, 640, 339);
+		frmXmlSigningFacility.setBounds(100, 100, 640, 408);
 		frmXmlSigningFacility.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -177,26 +186,75 @@ public class GenEnvelopingMainGUI {
 		getOutputFileButton.setBounds(525, 203, 89, 23);
 		frmXmlSigningFacility.getContentPane().add(getOutputFileButton);
 		
+		JLabel lblIncludePublicKey = new JLabel("Include public key in signature");
+		lblIncludePublicKey.setBounds(10, 235, 202, 14);
+		frmXmlSigningFacility.getContentPane().add(lblIncludePublicKey);
+		frmXmlSigningFacility.setVisible(true);
+		
+		rdbtnDoNotInclude = new JRadioButton("Do not include");
+		rdbtnDoNotInclude.setBounds(10, 256, 109, 23);
+		rdbtnDoNotInclude.setSelected(Boolean.valueOf("true"));
+		frmXmlSigningFacility.getContentPane().add(rdbtnDoNotInclude);
+		
+		rdbtnInclude = new JRadioButton("Include");
+		rdbtnInclude.setBounds(10, 282, 109, 23);
+		frmXmlSigningFacility.getContentPane().add(rdbtnInclude);
+
+		buttonGroupIncludePubKey = new ButtonGroup();
+		buttonGroupIncludePubKey.add(rdbtnInclude);
+		buttonGroupIncludePubKey.add(rdbtnDoNotInclude);
+		
+		JLabel lblSignatureType = new JLabel("Signature type");
+		lblSignatureType.setBounds(252, 235, 165, 14);
+		frmXmlSigningFacility.getContentPane().add(lblSignatureType);
+		
+		rdbtnEnveloping = new JRadioButton("Enveloping");
+		rdbtnEnveloping.setSelected(true);
+		rdbtnEnveloping.setBounds(252, 256, 109, 23);
+		frmXmlSigningFacility.getContentPane().add(rdbtnEnveloping);
+		
+		rdbtnEnveloped = new JRadioButton("Enveloped");
+		rdbtnEnveloped.setBounds(252, 282, 109, 23);
+		frmXmlSigningFacility.getContentPane().add(rdbtnEnveloped);
+
+		buttonGroupSignatureType = new ButtonGroup();
+		buttonGroupSignatureType.add(rdbtnEnveloping);
+		buttonGroupSignatureType.add(rdbtnEnveloped);
+		
 		JButton btnSign = new JButton("Sign file");
 		btnSign.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String[] genEnvelopingArgs = new String[4];
-				genEnvelopingArgs[0] = passFileTextField.getText();
-				genEnvelopingArgs[1] = certFileTextField.getText();
-				genEnvelopingArgs[2] = inputFileTextField.getText();
-				genEnvelopingArgs[3] = outputFileTextField.getText();
-
-				try {
-					genEnveloping.main(genEnvelopingArgs);
-				} catch (Exception e2) {
-					e2.printStackTrace();
-			        JOptionPane.showMessageDialog(null, "Error: " + e2);
+			public void actionPerformed(ActionEvent e) {				
+				if(rdbtnInclude.isSelected()) {
+					includePubKeyButtonValue = "true";
+				} else {
+					includePubKeyButtonValue = "false";			
 				}
-				
+
+				String[] genArgs = new String[5];
+				genArgs[0] = passFileTextField.getText();
+				genArgs[1] = certFileTextField.getText();
+				genArgs[2] = inputFileTextField.getText();
+				genArgs[3] = outputFileTextField.getText();
+				genArgs[4] = includePubKeyButtonValue;
+
+				if(rdbtnEnveloping.isSelected()) {					
+					try {
+						genEnveloping.main(genArgs);
+					} catch (Exception e2) {
+						e2.printStackTrace();
+				        JOptionPane.showMessageDialog(null, "Error: " + e2);
+					}				
+				} else {
+					try {
+						genEnveloped.main(genArgs);
+					} catch (Exception e2) {
+						e2.printStackTrace();
+				        JOptionPane.showMessageDialog(null, "Error: " + e2);
+					}
+				}						
 			}
 		});
-		btnSign.setBounds(525, 246, 89, 23);
+		btnSign.setBounds(525, 315, 89, 23);
 		frmXmlSigningFacility.getContentPane().add(btnSign);
-		frmXmlSigningFacility.setVisible(true);
 	}
 }

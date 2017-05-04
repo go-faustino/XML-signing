@@ -29,22 +29,22 @@ import org.w3c.dom.Document;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
- * XML-Enveloping-Signature 예제 변형
+ * XML-Enveloped-Signature 예제 변형
  * 
- * @source <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/xmldsig/GenEnveloping.java"/>
+ * @source <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/xmldsig/GenEnveloped.java"/>
  * @author <a href="mailto:modesty101@daum.net">김동규</a>
  * @since 2017
  */
 
 /**
- * This is a simple example of generating an Enveloping XML
+ * This is a simple example of generating an Enveloped XML
  * Signature.
  */
 
-public class genEnveloping {
+public class genEnveloped {
 
     //
-    // Synopis: java genEnveloping [output]
+    // Synopis: java genEnveloped [output]
     //
     //   where "output" is the name of a file that will contain the
     //   generated signature. If not specified, standard output will be used.
@@ -58,10 +58,30 @@ public class genEnveloping {
     	String outputFileName = args[3];
     	Boolean includePublicKey = Boolean.valueOf(args[4]);
         
-        // First, create the DOM XMLSignatureFactory that will be used to
-        // generate the XMLSignature
+    	// Create a DOM XMLSignatureFactory that will be used to generate the
+        // enveloped signature
         XMLSignatureFactory signatureFac = XMLSignatureFactory.getInstance("DOM");
 
+        // Create list of the necessary transforms
+        ArrayList transformList = new ArrayList();
+        Transform envTransform = signatureFac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null);
+        Transform exc14nTransform = signatureFac.newTransform("http://www.w3.org/2001/10/xml-exc-c14n#", (TransformParameterSpec) null);
+        transformList.add(envTransform);
+        transformList.add(exc14nTransform); 
+        
+        // Create a Reference to the enveloped document (in this case we are
+        // signing the whole document, so a URI of "" signifies that) and
+        // also specify the SHA256 digest algorithm and the ENVELOPED Transform.
+        Reference xmlDocumentRef = signatureFac.newReference
+                ("", signatureFac.newDigestMethod(DigestMethod.SHA256, null),transformList,null, null);
+        
+        /*
+        Reference xmlDocumentRef = signatureFac.newReference("",
+        		signatureFac.newDigestMethod(DigestMethod.SHA256, null),
+        		Collections.singletonList
+        		(signatureFac.newTransform("http://www.w3.org/2001/10/xml-exc-c14n#", (TransformParameterSpec) null)),
+        		null, null);                                
+*/
         // Next, prepare the referenced Object (XML read from file)
         DocumentBuilderFactory docBuilderFac = DocumentBuilderFactory.newInstance();
         docBuilderFac.setNamespaceAware(true);
@@ -79,14 +99,6 @@ public class genEnveloping {
         XMLStructure xmlFileContentStructure = new DOMStructure(xmlFileDoc.getDocumentElement());
         XMLObject xmlFileObj = signatureFac.newXMLObject
                 (Collections.singletonList(xmlFileContentStructure), rootXMLElementNameStr, null, null);
-        
-        // Next, create a Reference to a same-document URI that is an Object
-        // element and specify the SHA256 digest algorithm
-        Reference xmlDocumentRef = signatureFac.newReference("#" + rootXMLElementNameStr,
-        		signatureFac.newDigestMethod(DigestMethod.SHA256, null),
-        		Collections.singletonList
-        		(signatureFac.newTransform("http://www.w3.org/2001/10/xml-exc-c14n#", (TransformParameterSpec) null)),
-        		null, null);                                
 
         // Create the SignedInfo
         SignedInfo signedInfo = signatureFac.newSignedInfo(
@@ -149,57 +161,35 @@ public class genEnveloping {
         // Create a DOMSignContext and specify the RSA PrivateKey and
         // location of the resulting XMLSignature's parent element.
         DOMSignContext dsc = new DOMSignContext
-            (keyEntry.getPrivateKey(), xmlFileDoc);        
+            (keyEntry.getPrivateKey(), xmlFileDoc.getDocumentElement());        
         
 		// Create the XMLSignature (but don't sign it yet)
-        XMLSignature xmlSignature = signatureFac.newXMLSignature(signedInfo, keyInfo,
-        		Collections.singletonList(xmlFileObj), null, null);
-
-        // Save root element content in a string. The signing process changes the name spaces,
-        // but creates the digest with the original name spaces, which causes an error validating 
-        // the signature: error=12:invalid data:data and digest do not match
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer trans = tf.newTransformer();
-        StringWriter swBefore = new StringWriter();
-        StreamResult resultBefore = new StreamResult(swBefore);
-        DOMSource sourceXMLBefore = new DOMSource(xmlFileDoc.getDocumentElement());
-        trans.transform(sourceXMLBefore, resultBefore);
-        String xmlBeforeStr = swBefore.toString();
-        
-        int startRootBeforeIndex = xmlBeforeStr.indexOf("<" + fullRootXMLElementNameStr);
-        String xmlBeforeAuxStr = xmlBeforeStr.substring(startRootBeforeIndex);       
-        int endRootBeforeIndex = xmlBeforeAuxStr.indexOf(">");
-        String rootXMLElementContentBeforeStr = xmlBeforeAuxStr.substring(0, endRootBeforeIndex);       
-        
-        // Generate the enveloping signature
+        XMLSignature xmlSignature = signatureFac.newXMLSignature(signedInfo, keyInfo);
+       
+        // Generate the enveloped signature
         xmlSignature.sign(dsc);
 
-        // Before writing the file, the root element name spaces are changed back to their original value.
-        StringWriter swAfter = new StringWriter();
-        StreamResult resultAfter = new StreamResult(swAfter);
-        DOMSource sourceXMLAfter = new DOMSource(xmlFileDoc.getDocumentElement());
-        trans.transform(sourceXMLAfter, resultAfter);
-        String xmlAfterStr = swAfter.toString();
-                
-        int startRootAfterIndex = xmlAfterStr.indexOf("<" + fullRootXMLElementNameStr);
-        String xmlAfterAuxStr = xmlAfterStr.substring(startRootAfterIndex);       
-        int endRootAfterIndex = xmlAfterAuxStr.indexOf(">");
-        String rootXMLElementContentAfterStr = xmlAfterAuxStr.substring(0, endRootAfterIndex);       
-        
-        xmlAfterStr = xmlAfterStr.replace(rootXMLElementContentAfterStr, rootXMLElementContentBeforeStr);
+        // Transform file to string
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer trans = tf.newTransformer();
+        StringWriter xmlStringWriter = new StringWriter();
+        StreamResult streamResult = new StreamResult(xmlStringWriter);
+        DOMSource sourceXML = new DOMSource(xmlFileDoc.getDocumentElement());
+        trans.transform(sourceXML, streamResult);
+        String xmlString = xmlStringWriter.toString();
 
         // Write the file
         File outputFile = new File(outputFileName);
         if(outputFile.exists() && !outputFile.isDirectory()) {
         	int promptOverwrite = JOptionPane.showConfirmDialog(null, "Do you want to overwrite output file?", "File Exists", JOptionPane.YES_NO_OPTION);
             if (promptOverwrite == JOptionPane.YES_OPTION) {
-            	writeOutput(outputFileName, xmlAfterStr);
+            	writeOutput(outputFileName, xmlString);
             }
             else {
                JOptionPane.showMessageDialog(null, "File not written");
             }        	
         } else {
-        	writeOutput(outputFileName, xmlAfterStr);
+        	writeOutput(outputFileName, xmlString);
         }
     }
 	
