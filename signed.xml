@@ -1,8 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><Reference URI="#UnsignedXMLObject"><Transforms><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><DigestValue>ipkjXXlWT1uLh3JvDtzwt11rWqOw+u9VEoeYTF5ds60=</DigestValue></Reference></SignedInfo><SignatureValue>dz/N9ioShMlqSk7uiJp6kT3UucmEJbIg1q6R6Uyaq+ppKsH8PiesotgGRC76bLbZ3oAdWH/W1nYY
-UpqyTMZjIkx8qhoOxRK/IDf6AELZ84PdwRYQz1GpADFZtSoYEMMwxvVLw0fVxiXVFFoTyBuKhFn0
-VAygxcrAsl8k6AD6AXJf7ykuCqMnowOEfdcxYC58Huh/mJltvYkE63WCJcIDhdkormh98hd7Apa3
-e4OCQB7G4u4g/ps7ZLEFgZY+xtEdfltfBUEatZjH9nAfFsVt8CLgpkOLZiPccsxIX/lWPqUsOxiT
-AbxC7zpDbwLpV0CGaKKLWpjmf9kAVBEktqNgDQ==</SignatureValue><KeyInfo><X509Data><X509SubjectName>O=Internet Widgits Pty Ltd,ST=Some-State,C=AU</X509SubjectName><X509Certificate>MIIDtTCCAp2gAwIBAgIJAM1uhBquoIVrMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNVBAYTAkFVMRMw
+<?xml version="1.0" encoding="UTF-8"?><UnsignedXMLObject_X xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <UnsignedXMLObjectContent>
+      <UnsignedXMLField1>This file needs...</UnsignedXMLField1>
+      <UnsignedXMLField2>signing</UnsignedXMLField2>
+   </UnsignedXMLObjectContent>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><DigestValue>yp0lk5mH30pAIgQ7eLuxLo2N31lSN6HaaBkseusJ6jg=</DigestValue></Reference></SignedInfo><SignatureValue>O1BZvoAOMIV7gRDrTNQZCJnCjweDkO7tpdDnVZ1acYBJIK+umcxSN4SDiR27oeGIZwRHDjPx21zb
+DAIGxJyz/D7/Om453yHxNhx75XqO2Jsk9QdkRKPI3M4KDTHXoHX720u95pk28TgmUoAhWg3eGKv4
+o6CpAF79NykfWAR/5uMq541mD38r5JYPfZrVw9afLTu4B89OF9F9ONwHZQ1xqjKBFRm6jhEl7JA8
+2hA5SZMbCx6hRT7wQgi0Q9hNW22axjy5NJ0rEd9TnbSC/lqkS97sugsauohoyM0CdGOWlRyyfiST
+vgwAdyKI8aQCjN4TA/jGYzRIrL18oIJ1rGHD8A==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>zODAqPZ3dnfWOj1WdgMVJH6ZNe43D222z3aTlk7I2HEsIXZBgTHmiZOStQNgSabT9Mf4dGC815Ys
+Abkarx0pgUqNNsr02k6POu0bEeXyL/YWFnIUabH1VqchAKqxMfBaorRXLAOP5+rp912/Vd4zIzqY
+/GW6LlZ8w4lJGIwi/TGBe6CHMZrKM3LsykUnfruJXScWcto6rva3KAzpI6fLEqqc1HcvL9pyEQvw
+mNNmysd9HuCJh13SzuUVYOJkIWQ4/Qj87V0PQBuK88q0QgkeQw7VLJ2KaiKNBuV6+kHUHUukwBqL
+T73ygQLQHOVKA6Co4fzG3bcJnWrP7TnSu3inKw==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509SubjectName>O=Internet Widgits Pty Ltd,ST=Some-State,C=AU</X509SubjectName></X509Data><X509Data><X509Certificate>MIIDtTCCAp2gAwIBAgIJAM1uhBquoIVrMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNVBAYTAkFVMRMw
 EQYDVQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwHhcN
 MTcwNDA0MTUwNDMxWhcNMTgwNDA0MTUwNDMxWjBFMQswCQYDVQQGEwJBVTETMBEGA1UECBMKU29t
 ZS1TdGF0ZTEhMB8GA1UEChMYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIIBIjANBgkqhkiG9w0B
@@ -18,9 +27,4 @@ hvcNAQELBQADggEBAG4U2vuOugnaDgZkEYqyj+aPu21heLM8dxef/9MYFUjMe0LJP4m9o7FJYj6z
 nOwsGB1ZxuE3gQSUmcpY1tGzuLJimZdjx1cLnVc5lN+3q1hNjJd6t09i0VeMUqdONTzMwbfPfyPr
 bk68MtFg3Jxz+Hpc9vLG8cA5zu6M+GKvmqk2QhMPL7/o+Eu2bfYgmtUjcvuYJrzlDDPJImBnyqKw
 jaGOUoolaCA4h7Qmov9/Rsvhxwk9eDLKFSj6+Eji73YBiFw1HsYFJhuNxVcymgY9CUpH9tZ5Fcn6
-PMGowcfEvz/7+y57WL7F/Sx7IT/5yYuv4bwxK6kOZ8XIk/7VGgQFL9g=</X509Certificate></X509Data></KeyInfo><Object Id="UnsignedXMLObject"><UnsignedXMLObject_X xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-   <UnsignedXMLObjectContent>
-      <UnsignedXMLField1>This file needs signing</UnsignedXMLField1>
-      <UnsignedXMLField2>of the enveloping type</UnsignedXMLField2>
-   </UnsignedXMLObjectContent>
-</UnsignedXMLObject_X></Object></Signature>
+PMGowcfEvz/7+y57WL7F/Sx7IT/5yYuv4bwxK6kOZ8XIk/7VGgQFL9g=</X509Certificate></X509Data></KeyInfo></Signature></UnsignedXMLObject_X>
