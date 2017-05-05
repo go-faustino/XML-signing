@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -98,7 +99,7 @@ public class GenEnvelopingMainGUI {
 		passFileTextField.setBounds(10, 36, 505, 20);
 		frmXmlSigningFacility.getContentPane().add(passFileTextField);
 		passFileTextField.setColumns(1000);
-		passFileTextField.setText(appPath + "\\password_base64.txt");
+		passFileTextField.setText(appPath + File.separator + "password_base64.txt");
 		
 		JLabel lblCertificatepkcs = new JLabel("Certificate file (PKCS12)");
 		lblCertificatepkcs.setBounds(10, 67, 310, 14);
@@ -107,7 +108,7 @@ public class GenEnvelopingMainGUI {
 		certFileTextField = new JTextField();
 		certFileTextField.setColumns(1000);
 		certFileTextField.setBounds(10, 92, 505, 20);
-		certFileTextField.setText(appPath + "\\certificate.p12");
+		certFileTextField.setText(appPath + File.separator +  "certificate.p12");
 		frmXmlSigningFacility.getContentPane().add(certFileTextField);
 		
 		JLabel lblInputFile = new JLabel("Unsigned input file (XML)");
@@ -117,7 +118,7 @@ public class GenEnvelopingMainGUI {
 		inputFileTextField = new JTextField();
 		inputFileTextField.setColumns(1000);
 		inputFileTextField.setBounds(10, 148, 505, 20);
-		inputFileTextField.setText(appPath + "\\unsigned.xml");
+		inputFileTextField.setText(appPath + File.separator + "unsigned.xml");
 		frmXmlSigningFacility.getContentPane().add(inputFileTextField);
 		
 		JLabel lblSignedOutputFile = new JLabel("Signed output file destination (XML)");
@@ -127,7 +128,7 @@ public class GenEnvelopingMainGUI {
 		outputFileTextField = new JTextField();
 		outputFileTextField.setColumns(1000);
 		outputFileTextField.setBounds(10, 204, 505, 20);
-		outputFileTextField.setText(appPath + "\\signed.xml");
+		outputFileTextField.setText(appPath + File.separator + "signed.xml");
 		frmXmlSigningFacility.getContentPane().add(outputFileTextField);
 
 		JButton getPassFileButton = new JButton("Find...");
